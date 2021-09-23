@@ -1,22 +1,78 @@
+monthCodes = [1, 4, 4, 0, 2, 5, 0, 3, 6, 1, 4, 6];
+monthNames = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", 
+"JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
+daysOfTheWeek = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
-// Returns the day of the week for a specified date (e.g. October 31, 2019)
-const monthCode = {
-    jan:"1", feb: "4", mar: "4",
-    apr: "0", may: "2", jun: "5",
-    jul: "0", aug: "3", sep: "6",
-    oct: "1", nov: "4", dec: "6"
+// This function returns the day of the week
+function getDayOfTheWeek (year, month, day) {
+    
+	// Math to determine what day of the week a given date is
+    var lastTwo = (year.toString()).slice(-2);
+    var twelves = parseInt(Math.floor(lastTwo / 12))
+    var firstR = parseInt(lastTwo) % 12;
+    var secondR = Math.floor(firstR / 4);
+    var monthDay = parseInt(day);
+    
+    var monthNumber = monthNames.indexOf(month.toUpperCase());
+    var code = monthCodes[monthNumber];
+	
+	// Math with change if it is a leap year
+    var result = isLeapYear(year);
+    if (result == false) {
+        if (monthNumber == 0 || monthNumber == 1) {
+            code -= 1;
+        }
+        if (1600 <= year && year <= 1699) {
+            code += 6;
+        }
+        else if (1700 <= year && year <= 1799) {
+            code += 4;
+        } 
+        else if (1800 <= year && year <= 1899) {
+            code += 2;
+        }
+        else if (2000 <= year && year <= 2099) {
+            code += 6;
+        }
+        else if (2100 <= year && year <= 2199) {
+            code += 4;
+        }
+    }
+
+    var sum = (twelves + firstR + secondR + monthDay + code) % 7;
+    var answer = daysOfTheWeek[sum];
+
+    return answer;
 }
-function getDayOfTheWeek(year, month, day){
-    var year = year.toString().substr(-2)
-    var check = (year % 12) % 4 + day
-    return check;
+
+// forumula for leap year function found here: https://stackoverflow.com/questions/16353211/check-if-year-is-leap-year-in-javascript
+function isLeapYear(year) {
+    return ((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0);
 }
 
-// Returns true (e.g. for 1996, 2000, 2012, etc) or false (e.g. for 1900, 2011, etc.) depending on whether a year is a leap year or not.
-
-/*function isLeapYear(year) {
-    return undefined
+function makeCalendar(year) {
+    monthMore = [1, 3, 5, 7, 8, 10, 12]
+    monthLess = [4, 6, 9, 11]
+    monthFeb = [2]
+    for (let m = 1; m <= 12; m++) {
+        if (monthMore.includes(m) == true) {
+            var days = 31;
+        }
+        else if (monthLess.includes(m) == true) {
+            var days = 30;
+        }
+        else if (monthFeb.includes(m) == true) {
+            var days = 28;
+        }
+        for (let d = 1; d <= days; d++) {
+            day = getDayOfTheWeek(year, monthNames[m - 1], d);
+            console.log(m + "-" + d + "-" + year, "is a", day);
+        }
+    }
 }
-*/
 
-console.log(getDayOfTheWeek(1989,"August",16))
+function getDayOfTheWeekForUserDate(year, month, date) {
+    console.log(getDayOfTheWeek(year, month, date));
+}
+
+module.exports = { getDayOfTheWeekForUserDate, makeCalendar };
