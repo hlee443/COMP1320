@@ -1,5 +1,5 @@
 let readlineSync = require('readline-sync');
-let logic = require("./lab-two")
+let logic = require("./lab-two");
 
 logic.makeCalendar(2021);
 
